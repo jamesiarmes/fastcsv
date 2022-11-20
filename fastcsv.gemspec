@@ -15,7 +15,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.extensions    = ["ext/fastcsv/extconf.rb"]
 
-  s.add_development_dependency('coveralls')
+  s.add_development_dependency('simplecov', '~> 0.18')
+  s.add_development_dependency('simplecov-lcov', '~> 0.8.0')
   s.add_development_dependency('rake')
   s.add_development_dependency('rspec', '~> 3.1')
 

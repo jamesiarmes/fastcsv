@@ -102,15 +102,15 @@ RSpec.shared_examples 'a CSV parser' do
     # * "Illegal quoting in line %d" if unquoted field contains quote char.
     # * "Unclosed quoted field on line %d" if reaches EOF without closing.
     [%(   "x"), 'Illegal quoting in line %d.', 'Illegal quoting in line %d.'],
-    [%("x"   ), 'Unclosed quoted field on line %d.', 'Illegal quoting in line %d.'], # WONTFIX
+    [%("x"   ), 'Missing or stray quote in line %d', 'Illegal quoting in line %d.'], # WONTFIX
     [%(   "x"   ), 'Illegal quoting in line %d.', 'Illegal quoting in line %d.'],
     # Tab.
     [%(	"x"), 'Illegal quoting in line %d.', 'Illegal quoting in line %d.'],
-    [%("x"	), 'Unclosed quoted field on line %d.', 'Illegal quoting in line %d.'], # WONTFIX
+    [%("x"	), 'Missing or stray quote in line %d', 'Illegal quoting in line %d.'], # WONTFIX
     [%(	"x"	), 'Illegal quoting in line %d.', 'Illegal quoting in line %d.'],
 
     # Quoted next to unquoted.
-    [%("x"x), 'Unclosed quoted field on line %d.', 'Illegal quoting in line %d.'], # WONTFIX
+    [%("x"x), 'Missing or stray quote in line %d', 'Illegal quoting in line %d.'], # WONTFIX
     [%(x"x"), 'Illegal quoting in line %d.', 'Illegal quoting in line %d.'],
     [%(x"x"x), 'Illegal quoting in line %d.', 'Illegal quoting in line %d.'],
     [%("x"x"x"), 'Missing or stray quote in line %d', 'Illegal quoting in line %d.'], # WONTFIX
@@ -289,7 +289,8 @@ RSpec.describe FastCSV do
     it 'should raise an error on negative buffer size' do
       parser = FastCSV::Parser.new
       parser.buffer_size = -1
-      expect{parse(simple, nil, parser)}.to raise_error(NoMemoryError)
+      # TODO: Determine why this no longer throws NoMemoryError as of 2.4.
+      expect {parse(simple, nil, parser)}.to raise_error(ArgumentError)
       parser.buffer_size = nil
     end
   end
